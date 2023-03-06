@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 
@@ -282,6 +282,8 @@ class MyoRaw(object):
 
             c, attr, typ = unpack('BHB', p.payload[:4])
             pay = p.payload[5:]
+            pay1 = p.payload[5:8]
+            pay2 = p.payload[5:25]
 
             if attr == 0x27:
                 vals = unpack('8HB', pay)
@@ -292,13 +294,13 @@ class MyoRaw(object):
                 moving = vals[8]
                 self.on_emg(emg, moving)
             elif attr == 0x1c:
-                vals = unpack('10h', pay)
+                vals = unpack('10h', pay2)
                 quat = vals[:4]
                 acc = vals[4:7]
                 gyro = vals[7:10]
                 self.on_imu(quat, acc, gyro)
             elif attr == 0x23:
-                typ, val, xdir = unpack('3B', pay)
+                typ, val, xdir = unpack('3B', pay1)
 
                 if typ == 1: # on arm
                     self.on_arm(Arm(val), XDirection(xdir))
